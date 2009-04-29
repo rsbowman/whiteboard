@@ -28,12 +28,20 @@ hex_colors = {
 
     
 
-def simple_diagram_to_svg(infile, outfile, threshold, output_width):
-    infile_base, extension = os.path.splitext(infile)
+def enhance_level(channel, amount, infile, outfile):
+    os.system("convert %s -channel %s -level 0,%s%% %s" %(
+        infile, channel, amount, outfile))
     
+def simple_diagram_to_svg(infile, outfile, threshold, output_width,
+                          enhance_blue):
+    infile_base, extension = os.path.splitext(infile)
+
+    enhanced_file = "%s_enhanced%s" %(infile_base, extension)
+    enhance_level("blue", enhance_blue, infile, enhanced_file)
+                  
     thresholded_file = '%s_threshold%s' %(infile_base, extension)
     print 'reducing'
-    reduce_colors(infile, thresholded_file, threshold)
+    reduce_colors(enhanced_file, thresholded_file, threshold)
 
     print 'neighborizing'
     neighbor_file = '%s_neighbor%s' %(infile_base, extension)
@@ -66,6 +74,7 @@ def simple_diagram_to_svg(infile, outfile, threshold, output_width):
     os.system(cmd)
     
     if True:
+        os.remove(enhanced_file)
         os.remove(thresholded_file)
         os.remove(neighbor_file)
         os.remove(ppm_file)
@@ -197,8 +206,6 @@ from optparse import OptionParser
 def main(argv):
     usage = "usage: %prog [options] input_file"
     parser = OptionParser(usage=usage)
-
-    parser = OptionParser()
     parser.set_defaults(threshold=30)
     parser.add_option('-t', '--threshold',
                       help="threshold value for quantitization",
@@ -208,6 +215,11 @@ def main(argv):
     parser.add_option('-w', '--width',
                       help="width of output image",
                       type="int", dest="output_width")
+
+    parser.set_defaults(enhance_blue=5)
+    parser.add_option('-b', '--blue',
+                      help="enhance blues",
+                      type="int", dest="enhance_blue")
     
     options, args = parser.parse_args()
     if len(args) < 1:
@@ -219,7 +231,8 @@ def main(argv):
         print '%s -> %s' %(infile, outfile)
         simple_diagram_to_svg(infile, outfile,
                               threshold=options.threshold,
-                              output_width=options.output_width)
+                              output_width=options.output_width,
+                              enhance_blue=options.enhance_blue)
     
     return 0
 

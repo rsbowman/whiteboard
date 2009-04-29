@@ -1,2 +1,15 @@
-Whiteboard is a little program to make pretty 
-diagrams.
+Whiteboard is a little program to make pretty diagrams.  It is
+designed to take a scanned image of a diagram in black, red, blue,
+and/or green ink, process it, and output an editable SVG graphic
+together with a rendered PNG.  Whiteboard was written by Sean Bowman,
+r.sean.bowman@gmail.com.  
+
+To run whiteboard, you'll need
+
+* Python and the Python Imaging Library
+  (http://www.pythonware.com/products/pil/),
+* Imagemagick (http://www.imagemagick.org/script/index.php),
+* Netpbm (http://netpbm.sourceforge.net/),
+* Potrace (http://potrace.sourceforge.net/), and
+* Inkscape (http://www.inkscape.org/).
+
